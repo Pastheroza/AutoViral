@@ -6,6 +6,7 @@ import AnalysisCard from './AnalysisCard';
 import DetailsModal from './DetailsModal';
 import ExpandedContentView from './ExpandedContentView';
 import { PlusIcon } from './icons';
+import CreateVideoModal from './CreateVideoModal'; // Import the new modal
 
 interface SlideProps {
   data: TrendData;
@@ -22,6 +23,8 @@ interface SlideProps {
  */
 const Slide: React.FC<SlideProps> = ({ data, isExpanded, onToggleExpand }) => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  // State for the new "Create Video" modal
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
     <div className="h-full w-full flex-shrink-0 bg-[#0f0f0f] text-[#eaeaea] flex flex-col p-4 pt-28 snap-start relative overflow-hidden">
@@ -52,8 +55,12 @@ const Slide: React.FC<SlideProps> = ({ data, isExpanded, onToggleExpand }) => {
           <div className="flex-grow">
             <TrendFactorCard trendingFactor={data.trendingFactor} />
           </div>
-          <button className="flex-shrink-0 bg-[#1a1a1a] p-3 rounded-full transition-colors hover:bg-neutral-700 active:bg-neutral-600">
-            <PlusIcon className="w-6 h-6" />
+          {/* The '+' button is now larger and opens the create video modal */}
+          <button 
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex-shrink-0 bg-[#1a1a1a] p-4 rounded-full transition-colors hover:bg-neutral-700 active:bg-neutral-600"
+          >
+            <PlusIcon className="w-8 h-8" />
           </button>
         </div>
 
@@ -72,6 +79,13 @@ const Slide: React.FC<SlideProps> = ({ data, isExpanded, onToggleExpand }) => {
         <DetailsModal 
           analysis={data.detailedAnalysis} 
           onClose={() => setIsDetailsModalOpen(false)} 
+        />
+      )}
+
+      {/* Render the new Create Video modal */}
+      {isCreateModalOpen && (
+        <CreateVideoModal
+          onClose={() => setIsCreateModalOpen(false)}
         />
       )}
     </div>
