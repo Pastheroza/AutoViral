@@ -20,7 +20,7 @@ const mockData: TrendData[] = [
       daysPassed: '2 days ago',
       totalViews: '25M+ Views',
       firstSeen: '2024-09-01',
-      growthRate: 'Explosive'
+      growthPercentage: 420
     },
     analysis: {
       tag: 'HOT',
@@ -45,7 +45,7 @@ const mockData: TrendData[] = [
       daysPassed: '5 days ago',
       totalViews: '12M+ Views',
       firstSeen: '2024-08-28',
-      growthRate: 'Steady'
+      growthPercentage: 95
     },
     analysis: {
       tag: 'HIGH POTENTIAL',

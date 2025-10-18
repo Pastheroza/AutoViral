@@ -25,8 +25,8 @@ export interface TrendingFactor {
   totalViews: string;
   /** The date when the trend was first observed. */
   firstSeen: string;
-  /** A qualitative measure of the trend's growth speed (e.g., 'Explosive', 'Steady'). */
-  growthRate: string;
+  /** The percentage increase in trend velocity over a recent period. */
+  growthPercentage: number;
 }
 
 /**

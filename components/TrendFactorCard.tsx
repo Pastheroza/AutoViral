@@ -1,3 +1,4 @@
+// components/TrendFactorCard.tsx
 import React from 'react';
 import { TrendingFactor } from '../types';
 
@@ -35,7 +36,7 @@ const TrendFactorCard: React.FC<TrendFactorCardProps> = ({ trendingFactor }) => 
         <Statistic label="Active Since" value={trendingFactor.daysPassed} align="left" />
         <Statistic label="Total Views" value={trendingFactor.totalViews} align="right" />
         <Statistic label="First Seen" value={trendingFactor.firstSeen} align="left" />
-        <Statistic label="Growth" value={trendingFactor.growthRate} valueColor="text-green-500" align="right" />
+        <Statistic label="Hourly Growth" value={`+${trendingFactor.growthPercentage}%`} valueColor="text-green-500" align="right" />
       </div>
     </div>
   );

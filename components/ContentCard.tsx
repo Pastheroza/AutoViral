@@ -17,7 +17,7 @@ interface ContentCardProps {
 const ContentCard: React.FC<ContentCardProps> = ({ imageUrl, title, isExpanded, children }) => {
   return (
     <div 
-      className={`rounded-2xl bg-cover bg-center flex flex-col justify-end text-[#eaeaea] relative overflow-hidden transition-all duration-500 ease-in-out ${isExpanded ? 'h-full cursor-default' : 'h-60 cursor-pointer'}`}
+      className={`rounded-2xl bg-cover bg-center flex flex-col justify-end text-[#eaeaea] relative overflow-hidden transition-[height] duration-500 ease-in-out ${isExpanded ? 'h-full cursor-default' : 'h-60 cursor-pointer'}`}
       style={{ backgroundImage: `url(${imageUrl})` }}
     >
       {/* Gradient is adjusted in expanded mode */}

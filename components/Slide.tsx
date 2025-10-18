@@ -40,8 +40,12 @@ const Slide: React.FC<SlideProps> = ({ data, isExpanded, onToggleExpand }) => {
         </ContentCard>
       </div>
 
-      {/* These cards are hidden when the content view is expanded. */}
-      <div className={`transition-all duration-500 ease-in-out space-y-4 ${isExpanded ? 'opacity-0 -translate-y-full absolute' : 'opacity-100 translate-y-0 mt-4'}`}>
+      {/* 
+        These cards are hidden when the content view is expanded.
+        The animation is changed to a simple fade-out to feel smoother.
+        `absolute` removes it from the layout flow so the top card can grow.
+      */}
+      <div className={`transition-opacity duration-300 ease-in-out space-y-4 ${isExpanded ? 'opacity-0 pointer-events-none absolute -z-10' : 'opacity-100 translate-y-0 mt-4'}`}>
         <TrendFactorCard trendingFactor={data.trendingFactor} />
         <div onClick={() => setIsDetailsModalOpen(true)}>
           <AnalysisCard analysis={data.analysis} />
