@@ -7,7 +7,7 @@ interface AnalysisCardProps {
 
 const AnalysisCard: React.FC<AnalysisCardProps> = ({ analysis }) => {
   return (
-    <div className="bg-[#1a1a1a] rounded-2xl p-4 flex flex-col justify-between">
+    <div className="bg-[#1a1a1a] rounded-2xl p-4 flex flex-col justify-between cursor-pointer active:scale-95 transition-transform">
       <div>
         <p className="text-sm font-medium text-neutral-500">Trend Description</p>
         <div className="mt-3">

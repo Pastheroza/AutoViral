@@ -1,9 +1,14 @@
+export interface TrendingFactor {
+  daysPassed: string;
+  totalViews: string;
+  firstSeen: string;
+  growthRate: string;
+}
 
-export interface GrowthMetric {
-  label: string;
-  value: string;
-  change: number;
-  changeType: 'positive' | 'negative';
+export interface DetailedAnalysis {
+  about: string;
+  audience: string;
+  versatility: string;
 }
 
 export interface TrendData {
@@ -13,10 +18,11 @@ export interface TrendData {
   title: string;
   description: string;
   imageUrl: string;
-  growthMetrics: GrowthMetric[];
+  trendingFactor: TrendingFactor;
   analysis: {
     tag: string;
     tagColor: string;
     summary: string;
   };
+  detailedAnalysis: DetailedAnalysis;
 }

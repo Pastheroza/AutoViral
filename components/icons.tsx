@@ -26,3 +26,19 @@ export const TrendingDownIcon: React.FC<{ className?: string }> = ({ className =
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 6 9 12.75l4.5-4.5L21.75 18" />
     </svg>
 );
+
+export const XIcon: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (
+  <svg
+    className={className}
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M6 18L18 6M6 6l12 12"
+    />
+  </svg>
+);
