@@ -1,4 +1,5 @@
-
+// This file serves as a library for SVG icons used throughout the application.
+// Each icon is a React functional component for easy integration and styling.
 import React from 'react';
 
 export const SettingsIcon: React.FC<{ className?: string }> = ({ className = 'w-6 h-6' }) => (
@@ -12,19 +13,6 @@ export const UserIcon: React.FC<{ className?: string }> = ({ className = 'w-6 h-
   <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
   </svg>
-);
-
-// Replaced ArrowUpIcon with a more thematic TrendingUpIcon.
-export const TrendingUpIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 18 9 11.25l4.5 4.5L21.75 6" />
-    </svg>
-);
-
-export const TrendingDownIcon: React.FC<{ className?: string }> = ({ className = 'w-5 h-5' }) => (
-    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 6 9 12.75l4.5-4.5L21.75 18" />
-    </svg>
 );
 
 export const XIcon: React.FC<{ className?: string }> = ({ className = "w-6 h-6" }) => (

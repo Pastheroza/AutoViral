@@ -2,14 +2,13 @@ import React from 'react';
 import { TrendData } from './types';
 import Slide from './components/Slide';
 
-// Updated mock data to be relevant for content creators and viral trends.
+// Mock data array representing the trends to be displayed in the app.
+// This data is structured according to the TrendData interface.
+// In a real application, this would be fetched from an API.
 const mockData: TrendData[] = [
   {
     id: 1,
-    source: 'TIKTOK TREND',
-    timestamp: '4 hours ago',
     title: 'Vintage Camera Effect Goes Viral',
-    description: 'A new filter mimicking old VHS cameras is exploding in popularity, especially in lifestyle vlogs...',
     imageUrl: 'https://picsum.photos/seed/vhs/800/600',
     trendingFactor: {
       daysPassed: '2 days ago',
@@ -30,10 +29,7 @@ const mockData: TrendData[] = [
   },
   {
     id: 2,
-    source: 'YOUTUBE SHORTS',
-    timestamp: '8 hours ago',
     title: 'The "Silent Review" Video Format',
-    description: 'Creators are reviewing products without speaking, using ASMR and text overlays, gaining millions of views...',
     imageUrl: 'https://picsum.photos/seed/silent/800/600',
     trendingFactor: {
       daysPassed: '5 days ago',
@@ -54,10 +50,7 @@ const mockData: TrendData[] = [
   },
   {
     id: 3,
-    source: 'EMERGING',
-    timestamp: '1 day ago',
     title: '"One-Pot" Recipe Challenge',
-    description: 'Simple, quick, and visually satisfying recipe videos using only one pot are becoming a major food trend...',
     imageUrl: 'https://picsum.photos/seed/recipe/800/600',
     trendingFactor: {
       daysPassed: '7 days ago',
@@ -78,13 +71,20 @@ const mockData: TrendData[] = [
   }
 ];
 
-
+/**
+ * @component App
+ * @description The main root component of the application. It sets up the main container
+ * and renders the scrollable feed of trend slides.
+ */
 const App: React.FC = () => {
   return (
+    // Main container styled to look like a mobile app screen.
     <div className="relative h-screen w-full max-w-md mx-auto bg-[#0f0f0f] overflow-hidden font-sans">
+      {/* Scrollable container for the slides, using CSS Snap for TikTok-like scrolling. */}
        <div
         className="h-full w-full overflow-y-auto snap-y snap-mandatory scrollbar-hide"
       >
+        {/* Map over the mock data to render a Slide component for each trend. */}
         {mockData.map((data) => (
           <Slide key={data.id} data={data} />
         ))}
