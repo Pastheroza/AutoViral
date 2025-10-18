@@ -1,171 +1,151 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendData } from './types';
-import Slide from './components/Slide';
+import TrendList from './components/TrendList';
 import Header from './components/Header';
 import LoginModal from './components/LoginModal';
 import SignUpModal from './components/SignUpModal';
+import ApiStatus from './components/ApiStatus';
 
-// Expanded mock data to include `exampleVideos` for the new feature.
-const mockData: TrendData[] = [
-  {
-    id: 1,
-    title: 'Vintage Camera Effect Goes Viral',
-    imageUrl: 'https://picsum.photos/seed/vhs/800/600',
-    exampleVideos: [
-      { id: 1, creator: '@nostalgia_vibes', thumbnailUrl: 'https://picsum.photos/seed/vhs1/400/600' },
-      { id: 2, creator: '@retro_reels', thumbnailUrl: 'https://picsum.photos/seed/vhs2/400/600' },
-      { id: 3, creator: '@80s_dreamer', thumbnailUrl: 'https://picsum.photos/seed/vhs3/400/600' },
-    ],
-    trendingFactor: {
-      daysPassed: '2 days ago',
-      totalViews: '25M+ Views',
-      firstSeen: '2024-09-01',
-      growthPercentage: 420
-    },
-    analysis: {
-      tag: 'HOT',
-      tagColor: 'bg-red-500',
-      summary: 'This nostalgic aesthetic resonates with millennials and Gen Z. Easy to replicate. Ideal for fashion, travel, and "day in the life" content.'
-    },
-    detailedAnalysis: {
-      about: "This trend involves using filters or editing techniques to give modern footage the grainy, slightly distorted look of old VHS tapes. It taps into a powerful sense of nostalgia and is often paired with retro fashion and music.",
-      audience: "Primarily Gen Z (16-24) and Millennials (25-35) who appreciate retro aesthetics. It performs well with audiences interested in fashion, lifestyle, and creative videography.",
-      versatility: "Highly versatile. Can be applied to almost any niche, including travel vlogs, fashion lookbooks, 'day in the life' content, and even product showcases to give them an artistic, stylized feel."
-    }
-  },
-  {
-    id: 2,
-    title: 'The "Silent Review" Video Format',
-    imageUrl: 'https://picsum.photos/seed/silent/800/600',
-    exampleVideos: [
-        { id: 1, creator: '@asmr_unboxing', thumbnailUrl: 'https://picsum.photos/seed/silent1/400/600' },
-        { id: 2, creator: '@quiet_finds', thumbnailUrl: 'https://picsum.photos/seed/silent2/400/600' },
-    ],
-    trendingFactor: {
-      daysPassed: '5 days ago',
-      totalViews: '12M+ Views',
-      firstSeen: '2024-08-28',
-      growthPercentage: 95
-    },
-    analysis: {
-      tag: 'HIGH POTENTIAL',
-      tagColor: 'bg-green-500',
-      summary: 'Low barrier to entry and high audience curiosity make this a prime trend. Focus on unique products and crisp audio for maximum impact.'
-    },
-    detailedAnalysis: {
-        about: "Creators unbox and review products without speaking, relying on exaggerated gestures, satisfying ASMR sounds (tapping, crinkling), and on-screen text to convey their thoughts. The format is visually engaging and breaks language barriers.",
-        audience: "Broad appeal, but particularly effective with audiences interested in ASMR, product reviews, and visually-driven content. Works well for tech, beauty, and stationery niches.",
-        versatility: "Moderately versatile. Best suited for physical products where visual and auditory details are key. Less effective for service-based reviews or abstract concepts."
-    }
-  },
-  {
-    id: 3,
-    title: 'AI-Generated Art Reveal',
-    imageUrl: 'https://picsum.photos/seed/aiart/800/600',
-    exampleVideos: [
-      { id: 1, creator: '@digital_dreams', thumbnailUrl: 'https://picsum.photos/seed/aiart1/400/600' },
-      { id: 2, creator: '@future_canvas', thumbnailUrl: 'https://picsum.photos/seed/aiart2/400/600' },
-    ],
-    trendingFactor: {
-      daysPassed: '1 day ago',
-      totalViews: '40M+ Views',
-      firstSeen: '2024-09-02',
-      growthPercentage: 850
-    },
-    analysis: {
-      tag: 'EXPLODING',
-      tagColor: 'bg-purple-500',
-      summary: 'Creators use AI tools to generate stunning visuals and reveal the process. High engagement due to "wow" factor.'
-    },
-    detailedAnalysis: {
-      about: "This trend showcases the power of AI image generators. The format typically involves showing the text prompt given to the AI, followed by a dramatic reveal of the generated artwork. It's visually captivating and sparks discussion about technology and creativity.",
-      audience: "Tech enthusiasts, artists, and general audiences curious about artificial intelligence. Very strong performance on platforms that favor visually striking content.",
-      versatility: "Very versatile. Can be adapted to any theme or subject matter, from fantasy landscapes to surreal portraits. The only limit is the creator's imagination and the AI's capability."
-    }
-  },
-  {
-    id: 4,
-    title: 'Gourmet Ramen Challenge',
-    imageUrl: 'https://picsum.photos/seed/ramen/800/600',
-    exampleVideos: [
-      { id: 1, creator: '@noodle_king', thumbnailUrl: 'https://picsum.photos/seed/ramen1/400/600' },
-      { id: 2, creator: '@kitchen_hacks', thumbnailUrl: 'https://picsum.photos/seed/ramen2/400/600' },
-      { id: 3, creator: '@foodie_fusion', thumbnailUrl: 'https://picsum.photos/seed/ramen3/400/600' },
-    ],
-    trendingFactor: {
-      daysPassed: '1 week ago',
-      totalViews: '8M+ Views',
-      firstSeen: '2024-08-25',
-      growthPercentage: 45
-    },
-    analysis: {
-      tag: 'STEADY',
-      tagColor: 'bg-blue-500',
-      summary: 'An evergreen food trend that sees consistent engagement. Creators elevate instant ramen with unique ingredients. Highly adaptable.'
-    },
-    detailedAnalysis: {
-      about: "A simple but effective food trend where creators take a basic packet of instant ramen and transform it into a gourmet meal using creative ingredients like soft-boiled eggs, fresh vegetables, high-quality proteins, and elaborate sauces.",
-      audience: "Food lovers of all ages, especially students and young adults looking for creative and affordable meal ideas. Also appeals to cooking enthusiasts and fans of 'food hack' content.",
-      versatility: "Extremely versatile. The core concept can be adapted to any cuisine or dietary preference (e.g., vegan, spicy, seafood). The possibilities for ingredient combinations are endless, allowing for high creator originality."
-    }
+const API_URL = 'https://viral.biaz.hurated.com';
+
+// Convert API trend to TrendData format
+const convertApiTrend = (apiTrend: any, index: number): TrendData => {
+  if (!apiTrend || !apiTrend.keyword) {
+    throw new Error('Invalid trend data');
   }
-];
+  
+  const daysPassed = Math.floor((Date.now() - new Date(apiTrend.discoveredAt).getTime()) / (1000 * 60 * 60 * 24));
+  const views = apiTrend.metadata?.postCount || 1000;
+  const keyword = apiTrend.keyword || '#Unknown';
+  const cleanKeyword = keyword.replace(/[#@]/g, '').toLowerCase();
+  
+  return {
+    id: index + 1,
+    title: `${keyword} Trend Analysis`,
+    imageUrl: `https://picsum.photos/seed/${cleanKeyword}/800/600`,
+    exampleVideos: [
+      { id: 1, creator: '@trending_creator', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}1/400/600` },
+      { id: 2, creator: '@viral_content', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}2/400/600` },
+      { id: 3, creator: '@trend_setter', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}3/400/600` },
+    ],
+    trendingFactor: {
+      daysPassed: daysPassed === 0 ? 'Today' : `${daysPassed} days ago`,
+      totalViews: `${Math.floor(views / 1000)}K+ Views`,
+      firstSeen: apiTrend.discoveredAt?.split('T')[0] || '2025-10-18',
+      growthPercentage: apiTrend.score || 0
+    },
+    analysis: {
+      tag: apiTrend.metadata?.velocity === 'very-fast' ? 'HOT' : 'TRENDING',
+      tagColor: apiTrend.metadata?.velocity === 'very-fast' ? 'bg-red-500' : 'bg-orange-500',
+      summary: `${keyword} is ${apiTrend.status || 'trending'} with ${apiTrend.metadata?.engagement || 'good'} engagement. ${apiTrend.reason || 'Growing trend'}.`
+    },
+    detailedAnalysis: {
+      about: `${keyword} is currently trending on ${apiTrend.source || 'social media'} with a score of ${apiTrend.score || 0}. This trend has ${apiTrend.metadata?.postCount || 0} posts and is growing at ${apiTrend.metadata?.velocity || 'moderate'} velocity.`,
+      audience: `Primary audience engaging with ${keyword} shows ${apiTrend.metadata?.engagement || 'moderate'} engagement levels. Recent posts: ${apiTrend.metadata?.recentPosts || 0}.`,
+      versatility: `This trend can be adapted across multiple content types. Related hashtags: ${apiTrend.metadata?.hashtags?.join(', ') || 'Various trending tags'}.`
+    }
+  };
+};
 
-/**
- * @component App
- * @description The main root component of the application. It now manages global state
- * for modals and the expanded content view.
- */
 const App: React.FC = () => {
-  // State for managing authentication modals
-  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
-  // State to track which slide's content card is expanded. `null` means none are.
-  const [expandedSlideId, setExpandedSlideId] = useState<number | null>(null);
+  const [trends, setTrends] = useState<TrendData[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+
+  // Fetch trends from API
+  useEffect(() => {
+    const fetchTrends = async () => {
+      try {
+        const response = await fetch(`${API_URL}/trends?limit=10`);
+        if (!response.ok) throw new Error('Failed to fetch trends');
+        
+        const data = await response.json();
+        if (data.trends && Array.isArray(data.trends) && data.trends.length > 0) {
+          const convertedTrends = data.trends.map(convertApiTrend);
+          setTrends(convertedTrends);
+          setError(null);
+        } else {
+          throw new Error('No trends available');
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to load trends');
+        // Fallback to mock data if API fails
+        setTrends([{
+          id: 1,
+          title: 'API Connection Error',
+          imageUrl: 'https://picsum.photos/seed/error/800/600',
+          exampleVideos: [
+            { id: 1, creator: '@system', thumbnailUrl: 'https://picsum.photos/seed/error1/400/600' }
+          ],
+          trendingFactor: { daysPassed: 'Now', totalViews: '0', firstSeen: '2025-10-18', growthPercentage: 0 },
+          analysis: { tag: 'ERROR', tagColor: 'bg-red-500', summary: 'Unable to connect to trend API. Please try again later.' },
+          detailedAnalysis: { about: 'API connection failed', audience: 'Technical issue', versatility: 'Retry needed' }
+        }]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrends();
+    // Refresh trends every 30 seconds
+    const interval = setInterval(fetchTrends, 30000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleUserClick = () => {
-    // For now, we'll default to opening the login modal.
-    // A more complex implementation could show a menu.
-    setActiveModal('login');
+    setShowLoginModal(true);
   };
-  
-  const handleCloseModals = () => {
-    setActiveModal(null);
-  };
+
+  if (loading) {
+    return (
+      <div className="h-screen bg-black flex items-center justify-center text-white">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+          <p>Loading trending content...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="relative h-screen w-full max-w-md mx-auto bg-[#0f0f0f] overflow-hidden font-sans">
-      <Header
-        isSlideExpanded={expandedSlideId !== null}
+    <div className="h-screen bg-black overflow-hidden relative">
+      <Header 
+        isSlideExpanded={false}
         onUserClick={handleUserClick}
-        onCloseClick={() => setExpandedSlideId(null)}
+        onCloseClick={() => {}}
       />
       
-      <div className="h-full w-full overflow-y-auto snap-y snap-mandatory scrollbar-hide">
-        {mockData.map((data) => (
-          <Slide
-            key={data.id}
-            data={data}
-            isExpanded={expandedSlideId === data.id}
-            onToggleExpand={() =>
-              setExpandedSlideId(expandedSlideId === data.id ? null : data.id)
-            }
-          />
-        ))}
-      </div>
+      <TrendList trends={trends} />
 
-      {/* Render modals conditionally based on state */}
-      {activeModal === 'login' && (
-        <LoginModal
-          onClose={handleCloseModals}
-          onSwitchToSignUp={() => setActiveModal('signup')}
+      {error && (
+        <div className="absolute top-20 left-4 right-4 bg-red-500/20 border border-red-500 rounded p-3 text-white text-sm">
+          API Error: {error}
+        </div>
+      )}
+
+      {showLoginModal && (
+        <LoginModal 
+          onClose={() => setShowLoginModal(false)}
+          onSwitchToSignUp={() => {
+            setShowLoginModal(false);
+            setShowSignUpModal(true);
+          }}
         />
       )}
-      {activeModal === 'signup' && (
-        <SignUpModal
-          onClose={handleCloseModals}
-          onSwitchToLogin={() => setActiveModal('login')}
+
+      {showSignUpModal && (
+        <SignUpModal 
+          onClose={() => setShowSignUpModal(false)}
+          onSwitchToLogin={() => {
+            setShowSignUpModal(false);
+            setShowLoginModal(true);
+          }}
         />
       )}
+
+      <ApiStatus apiUrl={API_URL} />
     </div>
   );
 };

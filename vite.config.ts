@@ -6,7 +6,8 @@ export default defineConfig({
   server: {
     port: 6000,
     host: '0.0.0.0',
-    allowedHosts: ['app.viral.biaz.hurated.com'],
+    allowedHosts: ['app.viral.biaz.hurated.com', 'localhost'],
+    hmr: false
   },
   plugins: [react()],
   resolve: {
