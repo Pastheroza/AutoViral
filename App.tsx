@@ -58,6 +58,57 @@ const mockData: TrendData[] = [
         versatility: "Moderately versatile. Best suited for physical products where visual and auditory details are key. Less effective for service-based reviews or abstract concepts."
     }
   },
+  {
+    id: 3,
+    title: 'AI-Generated Art Reveal',
+    imageUrl: 'https://picsum.photos/seed/aiart/800/600',
+    exampleVideos: [
+      { id: 1, creator: '@digital_dreams', thumbnailUrl: 'https://picsum.photos/seed/aiart1/400/600' },
+      { id: 2, creator: '@future_canvas', thumbnailUrl: 'https://picsum.photos/seed/aiart2/400/600' },
+    ],
+    trendingFactor: {
+      daysPassed: '1 day ago',
+      totalViews: '40M+ Views',
+      firstSeen: '2024-09-02',
+      growthPercentage: 850
+    },
+    analysis: {
+      tag: 'EXPLODING',
+      tagColor: 'bg-purple-500',
+      summary: 'Creators use AI tools to generate stunning visuals and reveal the process. High engagement due to "wow" factor.'
+    },
+    detailedAnalysis: {
+      about: "This trend showcases the power of AI image generators. The format typically involves showing the text prompt given to the AI, followed by a dramatic reveal of the generated artwork. It's visually captivating and sparks discussion about technology and creativity.",
+      audience: "Tech enthusiasts, artists, and general audiences curious about artificial intelligence. Very strong performance on platforms that favor visually striking content.",
+      versatility: "Very versatile. Can be adapted to any theme or subject matter, from fantasy landscapes to surreal portraits. The only limit is the creator's imagination and the AI's capability."
+    }
+  },
+  {
+    id: 4,
+    title: 'Gourmet Ramen Challenge',
+    imageUrl: 'https://picsum.photos/seed/ramen/800/600',
+    exampleVideos: [
+      { id: 1, creator: '@noodle_king', thumbnailUrl: 'https://picsum.photos/seed/ramen1/400/600' },
+      { id: 2, creator: '@kitchen_hacks', thumbnailUrl: 'https://picsum.photos/seed/ramen2/400/600' },
+      { id: 3, creator: '@foodie_fusion', thumbnailUrl: 'https://picsum.photos/seed/ramen3/400/600' },
+    ],
+    trendingFactor: {
+      daysPassed: '1 week ago',
+      totalViews: '8M+ Views',
+      firstSeen: '2024-08-25',
+      growthPercentage: 45
+    },
+    analysis: {
+      tag: 'STEADY',
+      tagColor: 'bg-blue-500',
+      summary: 'An evergreen food trend that sees consistent engagement. Creators elevate instant ramen with unique ingredients. Highly adaptable.'
+    },
+    detailedAnalysis: {
+      about: "A simple but effective food trend where creators take a basic packet of instant ramen and transform it into a gourmet meal using creative ingredients like soft-boiled eggs, fresh vegetables, high-quality proteins, and elaborate sauces.",
+      audience: "Food lovers of all ages, especially students and young adults looking for creative and affordable meal ideas. Also appeals to cooking enthusiasts and fans of 'food hack' content.",
+      versatility: "Extremely versatile. The core concept can be adapted to any cuisine or dietary preference (e.g., vegan, spicy, seafood). The possibilities for ingredient combinations are endless, allowing for high creator originality."
+    }
+  }
 ];
 
 /**
