@@ -1,3 +1,19 @@
+// types.ts
+
+/**
+ * @interface ExampleVideo
+ * @description Defines the structure for a single example video within a trend.
+ * Used in the expanded content view.
+ */
+export interface ExampleVideo {
+  /** A unique identifier for the video. */
+  id: number;
+  /** The name of the creator who posted the video. */
+  creator: string;
+  /** The URL for the video's thumbnail image. */
+  thumbnailUrl: string;
+}
+
 /**
  * @interface TrendingFactor
  * @description Defines the structure for the key statistics of a trend.
@@ -37,6 +53,8 @@ export interface TrendData {
   title: string;
   /** The URL for the background image or video thumbnail of the trend. */
   imageUrl: string;
+  /** An array of example videos related to the trend. */
+  exampleVideos: ExampleVideo[];
   /** An object containing the key statistics for the trend. */
   trendingFactor: TrendingFactor;
   /** An object containing a brief summary and tag for the trend analysis. */

@@ -1,26 +1,37 @@
 import React from 'react';
-import { SettingsIcon, UserIcon } from './icons';
+import { SettingsIcon, UserIcon, XIcon } from './icons';
+
+interface HeaderProps {
+  /** A boolean to determine if a slide's content is expanded. */
+  isSlideExpanded: boolean;
+  /** Callback for when the user icon is clicked. */
+  onUserClick: () => void;
+  /** Callback for when the close icon is clicked (in expanded view). */
+  onCloseClick: () => void;
+}
 
 /**
  * @component Header
- * @description The main header component for the application. It is displayed at the top of each slide
- * and contains navigation buttons for settings and user profile.
+ * @description The main header, now state-aware. It shows the user icon by default
+ * and switches to a close icon when content is expanded.
  */
-const Header: React.FC = () => {
+const Header: React.FC<HeaderProps> = ({ isSlideExpanded, onUserClick, onCloseClick }) => {
   return (
-    // The header is absolutely positioned to float above the content.
-    <header className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center text-[#eaeaea] z-10 pt-12">
-      {/* Settings Button */}
-      <button>
-        <SettingsIcon className="w-7 h-7" />
+    <header className="absolute top-0 left-0 right-0 p-4 flex justify-between items-center text-[#eaeaea] z-20 pt-12">
+      <button className="bg-[#1a1a1a] p-2 rounded-full transition-colors hover:bg-neutral-700 active:bg-neutral-600">
+        <SettingsIcon className="w-6 h-6" />
       </button>
 
-      {/* Application Title */}
-      <h1 className="text-xl font-bold tracking-wider">AutoViral</h1>
+      <h1 className="text-xl font-bold tracking-wider transition-opacity duration-300" style={{ opacity: isSlideExpanded ? 0 : 1 }}>
+        AutoViral
+      </h1>
 
-      {/* User Profile Button */}
-      <button>
-        <UserIcon className="w-7 h-7" />
+      {/* Conditionally render User or Close icon based on expanded state */}
+      <button
+        onClick={isSlideExpanded ? onCloseClick : onUserClick}
+        className="bg-[#1a1a1a] p-2 rounded-full transition-all duration-300 hover:bg-neutral-700 active:bg-neutral-600"
+      >
+        {isSlideExpanded ? <XIcon className="w-6 h-6" /> : <UserIcon className="w-6 h-6" />}
       </button>
     </header>
   );

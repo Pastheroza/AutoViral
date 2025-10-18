@@ -1,15 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { TrendData } from './types';
 import Slide from './components/Slide';
+import Header from './components/Header';
+import LoginModal from './components/LoginModal';
+import SignUpModal from './components/SignUpModal';
 
-// Mock data array representing the trends to be displayed in the app.
-// This data is structured according to the TrendData interface.
-// In a real application, this would be fetched from an API.
+// Expanded mock data to include `exampleVideos` for the new feature.
 const mockData: TrendData[] = [
   {
     id: 1,
     title: 'Vintage Camera Effect Goes Viral',
     imageUrl: 'https://picsum.photos/seed/vhs/800/600',
+    exampleVideos: [
+      { id: 1, creator: '@nostalgia_vibes', thumbnailUrl: 'https://picsum.photos/seed/vhs1/400/600' },
+      { id: 2, creator: '@retro_reels', thumbnailUrl: 'https://picsum.photos/seed/vhs2/400/600' },
+      { id: 3, creator: '@80s_dreamer', thumbnailUrl: 'https://picsum.photos/seed/vhs3/400/600' },
+    ],
     trendingFactor: {
       daysPassed: '2 days ago',
       totalViews: '25M+ Views',
@@ -31,6 +37,10 @@ const mockData: TrendData[] = [
     id: 2,
     title: 'The "Silent Review" Video Format',
     imageUrl: 'https://picsum.photos/seed/silent/800/600',
+    exampleVideos: [
+        { id: 1, creator: '@asmr_unboxing', thumbnailUrl: 'https://picsum.photos/seed/silent1/400/600' },
+        { id: 2, creator: '@quiet_finds', thumbnailUrl: 'https://picsum.photos/seed/silent2/400/600' },
+    ],
     trendingFactor: {
       daysPassed: '5 days ago',
       totalViews: '12M+ Views',
@@ -48,47 +58,63 @@ const mockData: TrendData[] = [
         versatility: "Moderately versatile. Best suited for physical products where visual and auditory details are key. Less effective for service-based reviews or abstract concepts."
     }
   },
-  {
-    id: 3,
-    title: '"One-Pot" Recipe Challenge',
-    imageUrl: 'https://picsum.photos/seed/recipe/800/600',
-    trendingFactor: {
-      daysPassed: '7 days ago',
-      totalViews: '8M+ Views',
-      firstSeen: '2024-08-26',
-      growthRate: 'Accelerating'
-    },
-    analysis: {
-      tag: 'EVERGREEN',
-      tagColor: 'bg-blue-500',
-      summary: 'This trend has long-term potential due to its practicality. Use quick cuts, satisfying sounds, and display the final result prominently at the start.'
-    },
-    detailedAnalysis: {
-        about: "This trend focuses on recipes that can be made using just a single pot or pan, emphasizing convenience and minimal cleanup. The videos are typically fast-paced, visually appealing, and set to upbeat music.",
-        audience: "Wide audience, including busy professionals, students, and anyone looking for easy meal ideas. Particularly popular with home cooking and lifestyle-focused demographics.",
-        versatility: "Very versatile within the food niche. Can be adapted for countless cuisines and dietary preferences (e.g., vegan, gluten-free). The core concept of simplicity is universally appealing."
-    }
-  }
 ];
 
 /**
  * @component App
- * @description The main root component of the application. It sets up the main container
- * and renders the scrollable feed of trend slides.
+ * @description The main root component of the application. It now manages global state
+ * for modals and the expanded content view.
  */
 const App: React.FC = () => {
+  // State for managing authentication modals
+  const [activeModal, setActiveModal] = useState<'login' | 'signup' | null>(null);
+  // State to track which slide's content card is expanded. `null` means none are.
+  const [expandedSlideId, setExpandedSlideId] = useState<number | null>(null);
+
+  const handleUserClick = () => {
+    // For now, we'll default to opening the login modal.
+    // A more complex implementation could show a menu.
+    setActiveModal('login');
+  };
+  
+  const handleCloseModals = () => {
+    setActiveModal(null);
+  };
+
   return (
-    // Main container styled to look like a mobile app screen.
     <div className="relative h-screen w-full max-w-md mx-auto bg-[#0f0f0f] overflow-hidden font-sans">
-      {/* Scrollable container for the slides, using CSS Snap for TikTok-like scrolling. */}
-       <div
-        className="h-full w-full overflow-y-auto snap-y snap-mandatory scrollbar-hide"
-      >
-        {/* Map over the mock data to render a Slide component for each trend. */}
+      <Header
+        isSlideExpanded={expandedSlideId !== null}
+        onUserClick={handleUserClick}
+        onCloseClick={() => setExpandedSlideId(null)}
+      />
+      
+      <div className="h-full w-full overflow-y-auto snap-y snap-mandatory scrollbar-hide">
         {mockData.map((data) => (
-          <Slide key={data.id} data={data} />
+          <Slide
+            key={data.id}
+            data={data}
+            isExpanded={expandedSlideId === data.id}
+            onToggleExpand={() =>
+              setExpandedSlideId(expandedSlideId === data.id ? null : data.id)
+            }
+          />
         ))}
       </div>
+
+      {/* Render modals conditionally based on state */}
+      {activeModal === 'login' && (
+        <LoginModal
+          onClose={handleCloseModals}
+          onSwitchToSignUp={() => setActiveModal('signup')}
+        />
+      )}
+      {activeModal === 'signup' && (
+        <SignUpModal
+          onClose={handleCloseModals}
+          onSwitchToLogin={() => setActiveModal('login')}
+        />
+      )}
     </div>
   );
 };
