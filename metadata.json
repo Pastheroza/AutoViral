@@ -1,0 +1,5 @@
+{
+  "name": "Trend Finder",
+  "description": "A TikTok-style app for content creators to discover and analyze trending video ideas, providing key metrics and AI-powered forecasts.",
+  "requestFramePermissions": []
+}
