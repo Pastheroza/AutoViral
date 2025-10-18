@@ -1,0 +1,10 @@
+services:
+  autoviral-app:
+    build: .
+    ports:
+      - "6000:6000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
