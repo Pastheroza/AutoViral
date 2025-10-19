@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { TrendData } from './types';
 import TrendList from './components/TrendList';
+import TrendFilters from './components/TrendFilters';
 import Header from './components/Header';
 import LoginModal from './components/LoginModal';
 import SignUpModal from './components/SignUpModal';
 import ApiStatus from './components/ApiStatus';
+import { api, TrendsQuery } from './services/api';
 
 const API_URL = 'https://viral.biaz.hurated.com';
 
@@ -70,46 +72,47 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [filters, setFilters] = useState<TrendsQuery>({ limit: 10 });
+  const [showFilters, setShowFilters] = useState(false);
 
-  // Fetch trends from API
-  useEffect(() => {
-    const fetchTrends = async () => {
-      try {
-        const response = await fetch(`${API_URL}/trends?limit=10`);
-        if (!response.ok) throw new Error('Failed to fetch trends');
-        
-        const data = await response.json();
-        if (data.trends && Array.isArray(data.trends) && data.trends.length > 0) {
-          const convertedTrends = data.trends.map(convertApiTrend);
-          setTrends(convertedTrends);
-          setError(null);
-        } else {
-          throw new Error('No trends available');
-        }
-      } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to load trends');
-        // Fallback to mock data if API fails
-        setTrends([{
-          id: 1,
-          title: 'API Connection Error',
-          imageUrl: 'https://picsum.photos/seed/error/800/600',
-          exampleVideos: [
-            { id: 1, creator: '@system', thumbnailUrl: 'https://picsum.photos/seed/error1/400/600' }
-          ],
-          trendingFactor: { daysPassed: 'Now', totalViews: '0', firstSeen: '2025-10-18', growthPercentage: 0 },
-          analysis: { tag: 'ERROR', tagColor: 'bg-red-500', summary: 'Unable to connect to trend API. Please try again later.' },
-          detailedAnalysis: { about: 'API connection failed', audience: 'Technical issue', versatility: 'Retry needed' }
-        }]);
-      } finally {
-        setLoading(false);
+  // Fetch trends from API using the service
+  const fetchTrends = async (query: TrendsQuery = filters) => {
+    try {
+      setLoading(true);
+      const data = await api.getTrends(query);
+      
+      if (data.trends && Array.isArray(data.trends) && data.trends.length > 0) {
+        const convertedTrends = data.trends.map(convertApiTrend);
+        setTrends(convertedTrends);
+        setError(null);
+      } else {
+        setTrends([]);
+        setError('No trends found with current filters');
       }
-    };
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load trends');
+      // Fallback to empty state on error
+      setTrends([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchTrends();
-    // Refresh trends every 30 seconds
-    const interval = setInterval(fetchTrends, 30000);
+    // Refresh trends every 30 seconds with current filters
+    const interval = setInterval(() => fetchTrends(), 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [filters]);
+
+  const handleFiltersChange = (newFilters: TrendsQuery) => {
+    setFilters(newFilters);
+  };
+
+  const handleTrendStopped = () => {
+    // Refresh trends when a trend is stopped
+    fetchTrends();
+  };
 
   const handleUserClick = () => {
     setShowLoginModal(true);
@@ -134,11 +137,41 @@ const App: React.FC = () => {
         onCloseClick={() => {}}
       />
       
-      <TrendList trends={trends} />
+      {/* Filter Toggle */}
+      <div className="absolute top-20 right-4 z-10">
+        <button
+          onClick={() => setShowFilters(!showFilters)}
+          className="bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white p-2 rounded-full transition-colors"
+        >
+          🔍
+        </button>
+      </div>
+
+      <div className="h-full pt-20">
+        {/* Filters */}
+        {showFilters && (
+          <TrendFilters 
+            filters={filters} 
+            onFiltersChange={handleFiltersChange}
+          />
+        )}
+
+        {/* Trends List */}
+        <TrendList 
+          trends={trends} 
+          onTrendStopped={handleTrendStopped}
+        />
+      </div>
 
       {error && (
-        <div className="absolute top-20 left-4 right-4 bg-red-500/20 border border-red-500 rounded p-3 text-white text-sm">
+        <div className="absolute top-20 left-4 right-4 bg-red-500/20 border border-red-500 rounded p-3 text-white text-sm z-20">
           API Error: {error}
+          <button 
+            onClick={() => fetchTrends()}
+            className="ml-2 px-2 py-1 bg-red-600 hover:bg-red-700 text-xs rounded"
+          >
+            Retry
+          </button>
         </div>
       )}
 
