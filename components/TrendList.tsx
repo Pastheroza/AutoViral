@@ -5,24 +5,40 @@ interface TrendListProps {
   trends: TrendData[];
 }
 
-const generatePlatformLink = (keyword: string, source: string): string => {
-  const cleanKeyword = encodeURIComponent(keyword);
-  switch (source) {
-    case 'instagram':
-      return `https://www.instagram.com/explore/tags/${keyword.replace('#', '')}/`;
-    case 'x':
-      return `https://x.com/search?q=${cleanKeyword}`;
-    case 'reddit':
-      return `https://www.reddit.com/search/?q=${cleanKeyword}`;
-    default:
-      return `https://www.google.com/search?q=${cleanKeyword}`;
-  }
-};
+interface EnhancedTrendData extends TrendData {
+  enhancedData?: {
+    examplePosts?: Array<{
+      creator: string;
+      thumbnailUrl: string;
+      postUrl: string;
+      likes?: number;
+      views?: number;
+      caption?: string;
+    }>;
+    platformData?: {
+      instagram?: {
+        hashtagUrl: string;
+        postCount?: number;
+        avgEngagement?: number;
+      };
+      tiktok?: {
+        hashtagUrl: string;
+        postCount?: number;
+        avgEngagement?: number;
+      };
+    };
+    analysis?: {
+      category?: string;
+      difficulty?: string;
+      bestTimes?: string[];
+    };
+  };
+}
 
 const TrendList: React.FC<TrendListProps> = ({ trends }) => {
   return (
     <div className="h-full overflow-y-auto pt-20 pb-4">
-      {trends.map((trend) => (
+      {trends.map((trend: EnhancedTrendData) => (
         <div key={trend.id} className="mb-4 mx-4">
           <div className="bg-[#1a1a1a] rounded-lg overflow-hidden">
             {/* Trend Image */}
@@ -37,6 +53,21 @@ const TrendList: React.FC<TrendListProps> = ({ trends }) => {
                   {trend.analysis.tag}
                 </span>
               </div>
+              {/* Category and Difficulty */}
+              {trend.enhancedData?.analysis && (
+                <div className="absolute top-3 right-3 flex space-x-1">
+                  {trend.enhancedData.analysis.category && (
+                    <span className="px-2 py-1 bg-blue-600 text-white text-xs rounded">
+                      {trend.enhancedData.analysis.category}
+                    </span>
+                  )}
+                  {trend.enhancedData.analysis.difficulty && (
+                    <span className="px-2 py-1 bg-green-600 text-white text-xs rounded">
+                      {trend.enhancedData.analysis.difficulty}
+                    </span>
+                  )}
+                </div>
+              )}
             </div>
             
             {/* Trend Info */}
@@ -51,30 +82,76 @@ const TrendList: React.FC<TrendListProps> = ({ trends }) => {
                 <span className="text-green-400">+{trend.trendingFactor.growthPercentage}%</span>
               </div>
 
-              {/* Platform Link */}
-              <div className="mb-3">
-                <a 
-                  href={generatePlatformLink(trend.title.split(' ')[0], 'instagram')}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-xs rounded-full transition-colors"
-                >
-                  View on Instagram →
-                </a>
+              {/* Platform Links */}
+              <div className="mb-3 flex space-x-2">
+                {trend.enhancedData?.platformData?.instagram && (
+                  <a 
+                    href={trend.enhancedData.platformData.instagram.hashtagUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-3 py-1 bg-pink-600 hover:bg-pink-700 text-white text-xs rounded-full transition-colors"
+                  >
+                    Instagram ({trend.enhancedData.platformData.instagram.postCount || 0}) →
+                  </a>
+                )}
+                {trend.enhancedData?.platformData?.tiktok && (
+                  <a 
+                    href={trend.enhancedData.platformData.tiktok.hashtagUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-3 py-1 bg-black hover:bg-gray-800 text-white text-xs rounded-full transition-colors"
+                  >
+                    TikTok ({trend.enhancedData.platformData.tiktok.postCount || 0}) →
+                  </a>
+                )}
               </div>
+
+              {/* Best Times */}
+              {trend.enhancedData?.analysis?.bestTimes && (
+                <div className="mb-3">
+                  <span className="text-xs text-gray-400">Best times: </span>
+                  <span className="text-xs text-green-400">
+                    {trend.enhancedData.analysis.bestTimes.join(', ')}
+                  </span>
+                </div>
+              )}
               
-              {/* Example Videos */}
+              {/* Example Posts - Use enhanced data if available */}
               <div className="flex space-x-2">
-                {trend.exampleVideos.slice(0, 3).map((video) => (
-                  <div key={video.id} className="flex-1">
-                    <img 
-                      src={video.thumbnailUrl} 
-                      alt={video.creator}
-                      className="w-full h-16 object-cover rounded"
-                    />
-                    <p className="text-xs text-gray-400 mt-1">{video.creator}</p>
-                  </div>
-                ))}
+                {trend.enhancedData?.examplePosts?.length > 0 ? (
+                  trend.enhancedData.examplePosts.slice(0, 3).map((post, idx) => (
+                    <div key={idx} className="flex-1">
+                      <a 
+                        href={post.postUrl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block hover:opacity-80 transition-opacity"
+                      >
+                        <img 
+                          src={post.thumbnailUrl} 
+                          alt={post.creator}
+                          className="w-full h-16 object-cover rounded"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">{post.creator}</p>
+                        {post.likes && (
+                          <p className="text-xs text-green-400">❤️ {post.likes.toLocaleString()}</p>
+                        )}
+                      </a>
+                    </div>
+                  ))
+                ) : (
+                  // Fallback to original example videos
+                  trend.exampleVideos.slice(0, 3).map((video) => (
+                    <div key={video.id} className="flex-1">
+                      <img 
+                        src={video.thumbnailUrl} 
+                        alt={video.creator}
+                        className="w-full h-16 object-cover rounded"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">{video.creator}</p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>

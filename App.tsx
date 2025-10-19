@@ -19,15 +19,27 @@ const convertApiTrend = (apiTrend: any, index: number): TrendData => {
   const keyword = apiTrend.keyword || '#Unknown';
   const cleanKeyword = keyword.replace(/[#@]/g, '').toLowerCase();
   
+  // Use real thumbnail if available, otherwise generate placeholder
+  const imageUrl = apiTrend.thumbnailUrl || `https://picsum.photos/seed/${cleanKeyword}/800/600`;
+  
+  // Use real example posts if available, otherwise generate placeholders
+  const exampleVideos = apiTrend.examplePosts?.length > 0 
+    ? apiTrend.examplePosts.map((post: any, idx: number) => ({
+        id: idx + 1,
+        creator: post.creator || '@unknown',
+        thumbnailUrl: post.thumbnailUrl || `https://picsum.photos/seed/${cleanKeyword}${idx}/400/600`
+      }))
+    : [
+        { id: 1, creator: '@trending_creator', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}1/400/600` },
+        { id: 2, creator: '@viral_content', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}2/400/600` },
+        { id: 3, creator: '@trend_setter', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}3/400/600` },
+      ];
+  
   return {
     id: index + 1,
     title: `${keyword} Trend Analysis`,
-    imageUrl: `https://picsum.photos/seed/${cleanKeyword}/800/600`,
-    exampleVideos: [
-      { id: 1, creator: '@trending_creator', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}1/400/600` },
-      { id: 2, creator: '@viral_content', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}2/400/600` },
-      { id: 3, creator: '@trend_setter', thumbnailUrl: `https://picsum.photos/seed/${cleanKeyword}3/400/600` },
-    ],
+    imageUrl,
+    exampleVideos,
     trendingFactor: {
       daysPassed: daysPassed === 0 ? 'Today' : `${daysPassed} days ago`,
       totalViews: `${Math.floor(views / 1000)}K+ Views`,
@@ -43,6 +55,11 @@ const convertApiTrend = (apiTrend: any, index: number): TrendData => {
       about: `${keyword} is currently trending on ${apiTrend.source || 'social media'} with a score of ${apiTrend.score || 0}. This trend has ${apiTrend.metadata?.postCount || 0} posts and is growing at ${apiTrend.metadata?.velocity || 'moderate'} velocity.`,
       audience: `Primary audience engaging with ${keyword} shows ${apiTrend.metadata?.engagement || 'moderate'} engagement levels. Recent posts: ${apiTrend.metadata?.recentPosts || 0}.`,
       versatility: `This trend can be adapted across multiple content types. Related hashtags: ${apiTrend.metadata?.hashtags?.join(', ') || 'Various trending tags'}.`
+    },
+    enhancedData: {
+      examplePosts: apiTrend.examplePosts || [],
+      platformData: apiTrend.platformData || {},
+      analysis: apiTrend.analysis || {}
     }
   };
 };

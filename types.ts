@@ -43,6 +43,38 @@ export interface DetailedAnalysis {
 }
 
 /**
+ * @interface EnhancedData
+ * @description Enhanced data from the API for richer trend display
+ */
+export interface EnhancedData {
+  examplePosts?: Array<{
+    creator: string;
+    thumbnailUrl: string;
+    postUrl: string;
+    likes?: number;
+    views?: number;
+    caption?: string;
+  }>;
+  platformData?: {
+    instagram?: {
+      hashtagUrl: string;
+      postCount?: number;
+      avgEngagement?: number;
+    };
+    tiktok?: {
+      hashtagUrl: string;
+      postCount?: number;
+      avgEngagement?: number;
+    };
+  };
+  analysis?: {
+    category?: string;
+    difficulty?: string;
+    bestTimes?: string[];
+  };
+}
+
+/**
  * @interface TrendData
  * @description Represents the complete data structure for a single trend slide.
  */
@@ -65,4 +97,6 @@ export interface TrendData {
   };
   /** An object containing the detailed, in-depth analysis of the trend. */
   detailedAnalysis: DetailedAnalysis;
+  /** Enhanced data from the API */
+  enhancedData?: EnhancedData;
 }
