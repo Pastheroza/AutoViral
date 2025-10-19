@@ -135,19 +135,10 @@ const App: React.FC = () => {
         isSlideExpanded={false}
         onUserClick={handleUserClick}
         onCloseClick={() => {}}
+        onSearchClick={() => setShowFilters(!showFilters)}
       />
-      
-      {/* Filter Toggle */}
-      <div className="absolute top-20 right-4 z-10">
-        <button
-          onClick={() => setShowFilters(!showFilters)}
-          className="bg-[#1a1a1a] hover:bg-[#2a2a2a] text-white p-2 rounded-full transition-colors"
-        >
-          🔍
-        </button>
-      </div>
 
-      <div className="h-full pt-20">
+      <div className="h-full pt-24">
         {/* Filters */}
         {showFilters && (
           <TrendFilters 
@@ -164,7 +155,7 @@ const App: React.FC = () => {
       </div>
 
       {error && (
-        <div className="absolute top-20 left-4 right-4 bg-red-500/20 border border-red-500 rounded p-3 text-white text-sm z-20">
+        <div className="absolute top-24 left-4 right-4 bg-red-500/20 border border-red-500 rounded p-3 text-white text-sm z-20">
           API Error: {error}
           <button 
             onClick={() => fetchTrends()}
